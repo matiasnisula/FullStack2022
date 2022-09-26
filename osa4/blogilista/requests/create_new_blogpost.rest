@@ -1,0 +1,21 @@
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+
+{
+    "title": "Testaus",
+    "author": "Matias",
+    "url": "www.testausta.fi",
+    "likes": 5
+}
+
+####
+
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+
+{
+    "title": "Testausta 2",
+    "author": "abc",
+    "url": "www.testausta2.fi",
+    "likes": 3
+}
