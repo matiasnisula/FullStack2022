@@ -1,5 +1,6 @@
 const config = require("./utils/config");
 const express = require("express");
+require("express-async-errors");
 const blogsRouter = require("./controllers//blogs");
 const app = express();
 const cors = require("cors");
