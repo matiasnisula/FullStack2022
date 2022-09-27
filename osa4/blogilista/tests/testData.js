@@ -49,4 +49,40 @@ const blogs = [
     }
 ];
 
-module.exports = blogs;
+const users = [
+    {
+        username: "abcd123",
+        name: "ABC",
+        passwordHash: "54321"
+    },
+    {
+        username: "test1",
+        name: "TEST1",
+        passwordHash: "abc"
+    },
+    {
+        username: "test 2",
+        name: "test2",
+        passwordHash: "testing123"
+    },
+    {
+        username: "test3",
+        name: "test3",
+        passwordHash: "test_3"
+    },
+    {
+        username: "test4",
+        name: "",
+        passwordHash: "test_4"
+    },
+    {
+        username: "test5",
+        name: "TEST5",
+        passwordHash: "12345"
+    },
+];
+
+module.exports = {
+    blogs,
+    users
+};
