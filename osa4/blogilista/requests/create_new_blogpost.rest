@@ -12,10 +12,23 @@ Content-Type: application/json
 
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXIyIiwiaWQiOiI2MzM1YjliYmRjZDM2MDJjMDVlNDY4N2QiLCJpYXQiOjE2NjQ0NjU3MzB9.7fNOuGxJf2Vz5wJ7lt-w9-OLkqHfnuh2w9iLCKI_DtA
 
 {
     "title": "Testausta 2",
     "author": "ABC",
     "url": "www.testausta2.fi",
     "likes": 3
+}
+
+####
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1hdGlhcyIsImlkIjoiNjMzNWI5YjVkY2QzNjAyYzA1ZTQ2ODdhIiwiaWF0IjoxNjY0NDY1NTUwfQ.0zDT76l6eBWBBSkRfZWU0okgvqh4_q_9IUhcyRS5uN8
+
+{
+    "title": "Lisäys tokenin kanssa",
+    "author": "Token",
+    "url": "www.token.fi",
+    "likes": 9
 }
