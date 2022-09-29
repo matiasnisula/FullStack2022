@@ -1,6 +1,6 @@
 const listHelper = require("../utils/list_helper");
 
-const blogs = require("./testDataBlogs");
+const blogs = require("./testData").blogs;
 
 
 test("dummy returns one", () => {

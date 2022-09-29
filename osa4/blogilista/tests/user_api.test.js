@@ -159,7 +159,7 @@ describe("adding new user to db", () => {
         });
         expect(foundAddedUser).not.toBeDefined();
     });
-})
+});
 
 afterAll(() => {
     mongoose.connection.close();

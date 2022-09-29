@@ -15,7 +15,7 @@ Content-Type: application/json
 
 {
     "title": "Testausta 2",
-    "author": "abc",
+    "author": "ABC",
     "url": "www.testausta2.fi",
     "likes": 3
 }
