@@ -12,7 +12,7 @@ Content-Type: application/json
 
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXIyIiwiaWQiOiI2MzM1YjliYmRjZDM2MDJjMDVlNDY4N2QiLCJpYXQiOjE2NjQ0NjU3MzB9.7fNOuGxJf2Vz5wJ7lt-w9-OLkqHfnuh2w9iLCKI_DtA
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXIyIiwiaWQiOiI2MzM2YWE2MWM1ZDQzMWQ5ZjFkODE2ZmUiLCJpYXQiOjE2NjQ1MjcwODh9.2he3MKO37Yy0zeR5aR5q2q4nftAvCqtX8zlKBbexPwk
 
 {
     "title": "Testausta 2",
@@ -24,7 +24,7 @@ Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZ
 ####
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1hdGlhcyIsImlkIjoiNjMzNWI5YjVkY2QzNjAyYzA1ZTQ2ODdhIiwiaWF0IjoxNjY0NDY1NTUwfQ.0zDT76l6eBWBBSkRfZWU0okgvqh4_q_9IUhcyRS5uN8
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1hdGlhcyIsImlkIjoiNjMzNmFhNWRjNWQ0MzFkOWYxZDgxNmZiIiwiaWF0IjoxNjY0NTI2OTk5fQ.KNYCdNAUtFLnJ3FVMbas1iv6X55lEdxfMvyg6u4PI48
 
 {
     "title": "Lisäys tokenin kanssa",
