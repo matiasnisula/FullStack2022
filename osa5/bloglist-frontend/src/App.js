@@ -10,7 +10,7 @@ import loginService from "./services/login";
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
-  
+
   const [user, setUser] = useState(null);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -31,10 +31,10 @@ const App = () => {
             url: blog.url,
             likes: blog.likes,
             user: blog.user.id
-          });  
+          });
         }));
-    });
-   
+      });
+
   }, []);
 
   useEffect(() => {
@@ -54,39 +54,39 @@ const App = () => {
     event.preventDefault();
 
     try {
-      const user = await 
-        loginService.login({
-          username,
-          password
-        });
-      
+      const user = await
+      loginService.login({
+        username,
+        password
+      });
+
       window.localStorage.setItem(
         "loggedUser", JSON.stringify(user)
       );
-      
+
       blogService.setToken(user.token);
       setUser(user);
       setUsername("");
       setPassword("");
 
     } catch (exception) {
+      setNotification({
+        message: exception.response.data.error,
+        type: "error"
+      });
+      setTimeout(() => {
         setNotification({
-          message: exception.response.data.error,
-          type: "error"
+          message: "",
+          type: ""
         });
-        setTimeout(() => {
-          setNotification({
-            message: "",
-            type: ""
-          });
-        }, 5000);
+      }, 5000);
     }
-  }
+  };
 
   const handleLogout = () => {
     window.localStorage.removeItem("loggedUser");
     setUser(null);
-  }
+  };
 
   const addBlog = async (blogObject) => {
     try {
@@ -104,15 +104,15 @@ const App = () => {
           type: ""
         });
       }, 5000);
-      
+
     } catch (exception) {
       const errorMessage = exception.response.data.error
         ? exception.response.data.error
-        : "Cant add a new blog with given information. Please check the input fields."
-      
+        : "Cant add a new blog with given information. Please check the input fields.";
+
       setNotification({
-      message: errorMessage,
-      type: "error"
+        message: errorMessage,
+        type: "error"
       });
       setTimeout(() => {
         setNotification({
@@ -121,8 +121,8 @@ const App = () => {
         });
       }, 5000);
     }
-    
-  }
+
+  };
 
   const updateBlog = async (blogObject) => {
     try {
@@ -138,7 +138,7 @@ const App = () => {
     } catch (exception) {
       console.log("ERROR: ", exception);
     }
-  }
+  };
 
   const deleteBlog = async (blogObject) => {
     try {
@@ -146,16 +146,16 @@ const App = () => {
       if (!confirmDelete) {
         return;
       }
-      const result = await blogService.remove(blogObject.id);
+      await blogService.remove(blogObject.id);
       setBlogs(blogs.filter(blog => {
         return blog.id !== blogObject.id;
-      }))
+      }));
 
     } catch (exception) {
-        console.log("ERROR: ", exception);
+      console.log("ERROR: ", exception);
     }
-  }
-  
+  };
+
   const blogFormRef = useRef();
 
   if (user === null) {
@@ -174,7 +174,7 @@ const App = () => {
       </div>
     );
   }
-  
+
   return (
     <div>
       <h2>Blogs</h2>
@@ -187,15 +187,15 @@ const App = () => {
       {blogs.sort((a, b) => {
         return b.likes - a.likes;
       })
-      .map(blog =>
-        <Blog key={blog.id}
-          blog={blog}
-          updateBlog={updateBlog}
-          deleteBlog={deleteBlog}
-          loggedUser={user}/>
-      )}
+        .map(blog =>
+          <Blog key={blog.id}
+            blog={blog}
+            updateBlog={updateBlog}
+            deleteBlog={deleteBlog}
+            loggedUser={user}/>
+        )}
     </div>
   );
-}
+};
 
 export default App;

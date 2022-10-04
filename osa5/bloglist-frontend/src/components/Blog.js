@@ -1,22 +1,31 @@
 import { useState } from "react";
+import PropTypes from "prop-types";
 
-const Blog = ({blog, updateBlog, deleteBlog, loggedUser}) => {
+const Blog = ({ blog, updateBlog, deleteBlog, loggedUser }) => {
+
+  Blog.propTypes = {
+    blog: PropTypes.object.isRequired,
+    updateBlog: PropTypes.func.isRequired,
+    deleteBlog: PropTypes.func.isRequired,
+    loggedUser: PropTypes.object.isRequired
+  };
+
   const [showAll, setShowAll] = useState(false);
 
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 5,
-    border: 'solid',
+    border: "solid",
     borderWidth: 1,
     marginBottom: 5
-  }
+  };
   let buttonLabel = showAll ? "hide" : "view";
 
-  const handleClickShowAll = (e) => {
+  const handleClickShowAll = () => {
     setShowAll(!showAll);
-  }
+  };
 
-  const handleClickLikes = (e) => {
+  const handleClickLikes = () => {
     const newLikes = blog.likes + 1;
     const user = blog.user;
     updateBlog({
@@ -24,11 +33,11 @@ const Blog = ({blog, updateBlog, deleteBlog, loggedUser}) => {
       likes: newLikes,
       user: user
     });
-  }
+  };
 
-  const handleClickDelete = (e) => {
+  const handleClickDelete = () => {
     deleteBlog(blog);
-  }
+  };
 
   if (showAll) {
     return (
@@ -50,18 +59,18 @@ const Blog = ({blog, updateBlog, deleteBlog, loggedUser}) => {
         <div>
           {loggedUser.id === blog.user
             ? <button onClick={handleClickDelete}>delete</button>
-            :null}        
+            :null}
         </div>
       </div>
     );
   }
-  
+
   return (
     <div style={blogStyle}>
       {blog.title} {blog.author}
       <button onClick={handleClickShowAll}>{buttonLabel}</button>
     </div>
-  )  
-}
+  );
+};
 
-export default Blog
+export default Blog;
