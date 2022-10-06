@@ -22,14 +22,14 @@ const Notification = (props) => {
   if (notification.message === "") return null;
   if (notification.type === "notification") {
     return (
-      <div style={notificationStyle}>
+      <div style={notificationStyle} className="notification">
         {notification.message}
       </div>
     );
   }
 
   return (
-    <div style={errorStyle}>
+    <div style={errorStyle} className="error">
       {notification.message}
     </div>
   );

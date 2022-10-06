@@ -45,6 +45,7 @@ const CreateNewBlogForm = (props) => {
           value={blog.title}
           name="title"
           onChange={handleInputChange}
+          id="title-input"
         />
       </div>
       <div>
@@ -54,6 +55,7 @@ const CreateNewBlogForm = (props) => {
           value={blog.author}
           name="author"
           onChange={handleInputChange}
+          id="author-input"
         />
       </div>
       <div>
@@ -63,6 +65,7 @@ const CreateNewBlogForm = (props) => {
           value={blog.url}
           name="url"
           onChange={handleInputChange}
+          id="url-input"
         />
       </div>
       <button type="submit">Create</button>

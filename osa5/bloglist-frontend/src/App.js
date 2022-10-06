@@ -127,14 +127,12 @@ const App = () => {
   const updateBlog = async (blogObject) => {
     try {
       const updatedBlog = await blogService.update(blogObject);
-      console.log("updatedBlog: ", updatedBlog);
       setBlogs(blogs.map((blog) => {
         if (updatedBlog.id === blog.id) {
           return updatedBlog;
         }
         return blog;
       }));
-      console.log("blogs: ", blogs);
     } catch (exception) {
       console.log("ERROR: ", exception);
     }
