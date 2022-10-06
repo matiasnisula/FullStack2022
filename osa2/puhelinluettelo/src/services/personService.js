@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const baseUrl = "http://localhost:3001/persons"
+const baseUrl = "/api/persons";
+//"https://quiet-glade-7649.fly.dev/
 
 const getAll = () => {
     return axios

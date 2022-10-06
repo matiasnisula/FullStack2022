@@ -54,7 +54,7 @@ const App = () => {
             }, 5000);
           })
           .catch(error => {
-            setNotification(`Person ${changedPerson.name} doesnt exists`);
+            setNotification(`Person ${changedPerson.name} doesnt exists or phonenumber is in incorrect format`);
             setNotificationType("error");
             setTimeout(() => {
               setNotification(null);
@@ -75,7 +75,14 @@ const App = () => {
         setTimeout(() => {
           setNotification(null);
         }, 5000);
-      })  
+      })
+      .catch(error => {
+        setNotificationType("error");
+        setNotification(error.response.data.error);
+        setTimeout(() => {
+          setNotification(null);
+        }, 8000);
+      })
     
   };
   
