@@ -7,7 +7,7 @@ const Notification = (props) => {
     fontSize: "20px",
     border: "solid black",
     borderRadius: "5px",
-    padding: "10px"
+    padding: "10px",
   };
 
   const errorStyle = {
@@ -16,7 +16,7 @@ const Notification = (props) => {
     fontSize: "20px",
     border: "solid red",
     borderRadius: "5px",
-    padding: "10px"
+    padding: "10px",
   };
 
   if (notification.message === "") return null;
@@ -33,7 +33,6 @@ const Notification = (props) => {
       {notification.message}
     </div>
   );
-
 };
 
 export default Notification;

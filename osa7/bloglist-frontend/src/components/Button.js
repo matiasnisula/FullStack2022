@@ -1,10 +1,5 @@
 const Button = (props) => {
-
-  return (
-    <button onClick={props.handleClick}>
-      {props.name}
-    </button>
-  );
+  return <button onClick={props.handleClick}>{props.name}</button>;
 };
 
 export default Button;

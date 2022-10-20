@@ -1,13 +1,12 @@
 import PropTypes from "prop-types";
 
 const LoginForm = (props) => {
-
   LoginForm.propTypes = {
     handleLogin: PropTypes.func.isRequired,
     username: PropTypes.string.isRequired,
     setUsername: PropTypes.func.isRequired,
     password: PropTypes.string.isRequired,
-    setPassword: PropTypes.func.isRequired
+    setPassword: PropTypes.func.isRequired,
   };
 
   const handleInputUsername = (event) => {

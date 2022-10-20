@@ -2,15 +2,14 @@ import { useState } from "react";
 import PropTypes from "prop-types";
 
 const CreateNewBlogForm = (props) => {
-
   CreateNewBlogForm.propTypes = {
-    createBlog: PropTypes.func.isRequired
+    createBlog: PropTypes.func.isRequired,
   };
 
   const [blog, setBlog] = useState({
     title: "",
     author: "",
-    url: ""
+    url: "",
   });
 
   const handleInputChange = (event) => {
@@ -19,20 +18,20 @@ const CreateNewBlogForm = (props) => {
 
     setBlog({
       ...blog,
-      [name]: value
+      [name]: value,
     });
   };
 
   const addBlog = (event) => {
     event.preventDefault();
     props.createBlog({
-      ...blog
+      ...blog,
     });
 
     setBlog({
       title: "",
       author: "",
-      url: ""
+      url: "",
     });
   };
 

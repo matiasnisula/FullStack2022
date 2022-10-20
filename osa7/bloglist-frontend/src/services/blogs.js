@@ -14,7 +14,7 @@ const getAll = async () => {
 
 const create = async (blogObject) => {
   const config = {
-    headers: { Authorization: token }
+    headers: { Authorization: token },
   };
 
   const response = await axios.post(baseUrl, blogObject, config);
@@ -23,15 +23,19 @@ const create = async (blogObject) => {
 
 const update = async (blogObject) => {
   const config = {
-    headers: { Authorization: token }
+    headers: { Authorization: token },
   };
-  const response = await axios.put(`${baseUrl}/${blogObject.id}`, blogObject, config);
+  const response = await axios.put(
+    `${baseUrl}/${blogObject.id}`,
+    blogObject,
+    config
+  );
   return response.data;
 };
 
 const remove = async (id) => {
   const config = {
-    headers: { Authorization: token }
+    headers: { Authorization: token },
   };
   const response = await axios.delete(`${baseUrl}/${id}`, config);
   return response.data;
@@ -42,5 +46,5 @@ export default {
   create,
   setToken,
   update,
-  remove
+  remove,
 };
