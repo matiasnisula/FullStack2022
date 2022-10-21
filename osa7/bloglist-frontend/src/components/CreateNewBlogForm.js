@@ -1,10 +1,10 @@
 import { useState } from "react";
-import PropTypes from "prop-types";
+import { useDispatch } from "react-redux";
+import { setNotificationWithTimeout } from "../reducers/notificationReducer";
+import { createBlog } from "../reducers/blogReducer";
 
 const CreateNewBlogForm = (props) => {
-  CreateNewBlogForm.propTypes = {
-    createBlog: PropTypes.func.isRequired,
-  };
+  const dispatch = useDispatch();
 
   const [blog, setBlog] = useState({
     title: "",
@@ -24,15 +24,22 @@ const CreateNewBlogForm = (props) => {
 
   const addBlog = (event) => {
     event.preventDefault();
-    props.createBlog({
-      ...blog,
-    });
-
-    setBlog({
-      title: "",
-      author: "",
-      url: "",
-    });
+    dispatch(createBlog({ ...blog }))
+      .then(() => {
+        const message = `a new blog ${blog.title} by ${blog.author} added`;
+        setBlog({
+          title: "",
+          author: "",
+          url: "",
+        });
+        dispatch(setNotificationWithTimeout(message, "notification", 5));
+        props.blogFormRef.current.toggleVisibility();
+      })
+      .catch((error) => {
+        const errorMessage =
+          "Cant add a new blog with given information. Please check the input fields.";
+        dispatch(setNotificationWithTimeout(errorMessage, "error", 5));
+      });
   };
 
   return (

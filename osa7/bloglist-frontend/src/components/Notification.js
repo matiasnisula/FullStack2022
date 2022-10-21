@@ -1,5 +1,7 @@
-const Notification = (props) => {
-  const { notification } = props;
+import { useSelector } from "react-redux";
+
+const Notification = () => {
+  const notification = useSelector((state) => state.notification);
 
   const notificationStyle = {
     color: "green",
@@ -19,7 +21,7 @@ const Notification = (props) => {
     padding: "10px",
   };
 
-  if (notification.message === "") return null;
+  if (notification === null) return;
   if (notification.type === "notification") {
     return (
       <div style={notificationStyle} className="notification">

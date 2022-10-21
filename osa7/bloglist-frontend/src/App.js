@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
-import Blog from "./components/Blog";
+import { useDispatch, useSelector } from "react-redux";
+import BlogList from "./components/BlogList";
 import LoginForm from "./components/LoginForm";
 import CreateBlogForm from "./components/CreateNewBlogForm";
 import Button from "./components/Button";
@@ -7,30 +8,32 @@ import Notification from "./components/Notification";
 import Togglable from "./components/Togglable";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
+import { setNotificationWithTimeout } from "./reducers/notificationReducer";
+import { setBlogs } from "./reducers/blogReducer";
 
 const App = () => {
-  const [blogs, setBlogs] = useState([]);
+  const blogs = useSelector((state) => state.blogs);
   const [user, setUser] = useState(null);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [notification, setNotification] = useState({
-    message: "",
-    type: "",
-  });
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     blogService.getAll().then((resultBlogs) => {
-      setBlogs(
-        resultBlogs.map((blog) => {
-          return {
-            id: blog.id,
-            title: blog.title,
-            author: blog.author,
-            url: blog.url,
-            likes: blog.likes,
-            user: blog.user.id,
-          };
-        })
+      dispatch(
+        setBlogs(
+          resultBlogs.map((blog) => {
+            return {
+              id: blog.id,
+              title: blog.title,
+              author: blog.author,
+              url: blog.url,
+              likes: blog.likes,
+              user: blog.user.id,
+            };
+          })
+        )
       );
     });
   }, []);
@@ -61,16 +64,8 @@ const App = () => {
       setUsername("");
       setPassword("");
     } catch (exception) {
-      setNotification({
-        message: exception.response.data.error,
-        type: "error",
-      });
-      setTimeout(() => {
-        setNotification({
-          message: "",
-          type: "",
-        });
-      }, 5000);
+      const message = exception.response.data.error;
+      dispatch(setNotificationWithTimeout(message, "error", 5));
     }
   };
 
@@ -79,50 +74,18 @@ const App = () => {
     setUser(null);
   };
 
-  const addBlog = async (blogObject) => {
-    try {
-      const newBlog = await blogService.create(blogObject);
-      blogFormRef.current.toggleVisibility();
-
-      setBlogs(blogs.concat(newBlog));
-      setNotification({
-        message: `a new blog ${newBlog.title} by ${newBlog.author} added`,
-        type: "notification",
-      });
-      setTimeout(() => {
-        setNotification({
-          message: "",
-          type: "",
-        });
-      }, 5000);
-    } catch (exception) {
-      const errorMessage = exception.response.data.error
-        ? exception.response.data.error
-        : "Cant add a new blog with given information. Please check the input fields.";
-
-      setNotification({
-        message: errorMessage,
-        type: "error",
-      });
-      setTimeout(() => {
-        setNotification({
-          message: "",
-          type: "",
-        });
-      }, 5000);
-    }
-  };
-
   const updateBlog = async (blogObject) => {
     try {
       const updatedBlog = await blogService.update(blogObject);
-      setBlogs(
-        blogs.map((blog) => {
-          if (updatedBlog.id === blog.id) {
-            return updatedBlog;
-          }
-          return blog;
-        })
+      dispatch(
+        setBlogs(
+          blogs.map((blog) => {
+            if (updatedBlog.id === blog.id) {
+              return updatedBlog;
+            }
+            return blog;
+          })
+        )
       );
     } catch (exception) {
       console.log("ERROR: ", exception);
@@ -138,10 +101,12 @@ const App = () => {
         return;
       }
       await blogService.remove(blogObject.id);
-      setBlogs(
-        blogs.filter((blog) => {
-          return blog.id !== blogObject.id;
-        })
+      dispatch(
+        setBlogs(
+          blogs.filter((blog) => {
+            return blog.id !== blogObject.id;
+          })
+        )
       );
     } catch (exception) {
       console.log("ERROR: ", exception);
@@ -154,7 +119,7 @@ const App = () => {
     return (
       <div>
         <h2>Log in to application</h2>
-        <Notification notification={notification} />
+        <Notification />
 
         <LoginForm
           handleLogin={handleLogin}
@@ -170,25 +135,13 @@ const App = () => {
   return (
     <div>
       <h2>Blogs</h2>
-      <Notification notification={notification} />
+      <Notification />
       <p>{user.name} logged in</p>
       <Button name="Logout" handleClick={handleLogout} />
       <Togglable buttonLabel="new blog" ref={blogFormRef}>
-        <CreateBlogForm createBlog={addBlog} />
+        <CreateBlogForm blogFormRef={blogFormRef} />
       </Togglable>
-      {blogs
-        .sort((a, b) => {
-          return b.likes - a.likes;
-        })
-        .map((blog) => (
-          <Blog
-            key={blog.id}
-            blog={blog}
-            updateBlog={updateBlog}
-            deleteBlog={deleteBlog}
-            loggedUser={user}
-          />
-        ))}
+      <BlogList updateBlog={updateBlog} deleteBlog={deleteBlog} user={user} />
     </div>
   );
 };
