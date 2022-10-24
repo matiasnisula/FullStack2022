@@ -58,4 +58,24 @@ export const addLikeToBlog = (id) => {
   };
 };
 
+export const initBlogs = () => {
+  return async (dispatch, getState) => {
+    const blogs = await blogService.getAll();
+    dispatch(
+      setBlogs(
+        blogs.map((blog) => {
+          return {
+            id: blog.id,
+            title: blog.title,
+            author: blog.author,
+            url: blog.url,
+            likes: blog.likes,
+            user: blog.user.id,
+          };
+        })
+      )
+    );
+  };
+};
+
 export default blogSlice.reducer;

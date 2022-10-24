@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { deleteBlogById, addLikeToBlog } from "../reducers/blogReducer";
 import { setNotificationWithTimeout } from "../reducers/notificationReducer";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
-const Blog = ({ id, author, title, url, likes, blogUserId, loggedUser }) => {
+const Blog = ({ id, author, title, url, likes, blogUserId }) => {
   const dispatch = useDispatch();
+  const loggedUser = useSelector((state) => state.loggedUser);
   const [showAll, setShowAll] = useState(false);
 
   const blogStyle = {

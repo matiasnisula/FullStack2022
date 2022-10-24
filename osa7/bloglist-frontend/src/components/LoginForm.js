@@ -1,29 +1,43 @@
-import PropTypes from "prop-types";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { login } from "../reducers/loggedUserReducer";
+import { setNotificationWithTimeout } from "../reducers/notificationReducer";
 
-const LoginForm = (props) => {
-  LoginForm.propTypes = {
-    handleLogin: PropTypes.func.isRequired,
-    username: PropTypes.string.isRequired,
-    setUsername: PropTypes.func.isRequired,
-    password: PropTypes.string.isRequired,
-    setPassword: PropTypes.func.isRequired,
-  };
+const LoginForm = () => {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
+  const dispatch = useDispatch();
 
   const handleInputUsername = (event) => {
-    props.setUsername(event.target.value);
+    setUsername(event.target.value);
   };
 
   const handleInputPassword = (event) => {
-    props.setPassword(event.target.value);
+    setPassword(event.target.value);
+  };
+
+  const handleLogin = (event) => {
+    event.preventDefault();
+
+    dispatch(login(username, password))
+      .then(() => {
+        setUsername("");
+        setPassword("");
+      })
+      .catch((exception) => {
+        const message = exception.response.data.error;
+        dispatch(setNotificationWithTimeout(message, "error", 5));
+      });
   };
 
   return (
-    <form onSubmit={props.handleLogin} id="login-form">
+    <form onSubmit={handleLogin} id="login-form">
       <div>
         username
         <input
           type="text"
-          value={props.username}
+          value={username}
           name="Username"
           onChange={handleInputUsername}
           id="username-input"
@@ -33,7 +47,7 @@ const LoginForm = (props) => {
         password
         <input
           type="password"
-          value={props.password}
+          value={password}
           name="Password"
           onChange={handleInputPassword}
           id="password-input"
