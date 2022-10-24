@@ -53,7 +53,6 @@ export const addLikeToBlog = (id) => {
       likes: blogObjectToBeUpdated.likes + 1,
     };
     const updatedBlogObject = await blogService.update(newBlogObject);
-    console.log("response (UPDATE): ", updatedBlogObject);
     dispatch(appendUpdatedBlog(updatedBlogObject));
   };
 };

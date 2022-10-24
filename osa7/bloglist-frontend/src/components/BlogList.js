@@ -12,17 +12,7 @@ const BlogList = () => {
     <div>
       <h2>Blogs</h2>
       {sortedBlogs.map((blog) => {
-        return (
-          <Blog
-            key={blog.id}
-            id={blog.id}
-            author={blog.author}
-            title={blog.title}
-            url={blog.url}
-            likes={blog.likes}
-            blogUserId={blog.user}
-          />
-        );
+        return <Blog key={blog.id} blog={blog} showInfo={false} />;
       })}
     </div>
   );

@@ -1,15 +1,7 @@
-import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
-import { initUsers } from "../reducers/userReducer";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
 const UserList = () => {
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(initUsers());
-  }, []);
-
   const users = useSelector((state) => state.users);
   if (users.length === 0) return;
 

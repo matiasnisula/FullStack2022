@@ -1,12 +1,19 @@
-import { useState } from "react";
 import { deleteBlogById, addLikeToBlog } from "../reducers/blogReducer";
 import { setNotificationWithTimeout } from "../reducers/notificationReducer";
 import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 
-const Blog = ({ id, author, title, url, likes, blogUserId }) => {
+const Blog = ({ blog, showInfo }) => {
+  if (!blog) {
+    return null;
+  }
   const dispatch = useDispatch();
   const loggedUser = useSelector((state) => state.loggedUser);
-  const [showAll, setShowAll] = useState(false);
+  const user = useSelector((state) => {
+    return state.users.find((user) => {
+      return user.id === blog.user;
+    });
+  });
 
   const blogStyle = {
     paddingTop: 10,
@@ -15,63 +22,64 @@ const Blog = ({ id, author, title, url, likes, blogUserId }) => {
     borderWidth: 1,
     marginBottom: 5,
   };
-  let buttonLabel = showAll ? "hide" : "view";
-
-  const handleClickShowAll = () => {
-    setShowAll(!showAll);
-  };
 
   const handleClickLikes = () => {
-    dispatch(addLikeToBlog(id));
+    dispatch(addLikeToBlog(blog.id));
   };
 
   const deleteBlog = (id) => {
-    let confirmDelete = window.confirm(`Remove ${title} by ${author}`);
+    let confirmDelete = window.confirm(
+      `Remove ${blog.title} by ${blog.author}`
+    );
     if (!confirmDelete) {
       return;
     }
     dispatch(deleteBlogById(id))
       .then(() => {
-        const message = `Deleted ${title} by ${author}`;
+        const message = `Deleted ${blog.title} by ${blog.author}`;
         dispatch(setNotificationWithTimeout(message, "notification", 5));
       })
       .catch((error) => {
-        const errorMessage = `Failed to delete ${title} by ${author}`;
+        const errorMessage = `Failed to delete ${blog.title} by ${blog.author}`;
         console.log("ERROR: ", error);
         dispatch(setNotificationWithTimeout(errorMessage, "error", 5));
       });
   };
 
   const handleClickDelete = () => {
-    deleteBlog(id);
+    deleteBlog(blog.id);
   };
 
-  if (showAll) {
+  if (!showInfo) {
     return (
-      <div style={blogStyle} className="blog">
-        <div>
-          {title}
-          <button onClick={handleClickShowAll}>{buttonLabel}</button>
-        </div>
-        <div>{author}</div>
-        <div>{url}</div>
-        <div>
-          {likes}
-          <button onClick={handleClickLikes}>like</button>
-        </div>
-        <div>
-          {loggedUser.id === blogUserId ? (
-            <button onClick={handleClickDelete}>delete</button>
-          ) : null}
-        </div>
+      <div style={blogStyle}>
+        <Link to={`/blogs/${blog.id}`}>
+          {blog.title} {blog.author}
+        </Link>
       </div>
     );
   }
 
   return (
-    <div style={blogStyle}>
-      {title} {author}
-      <button onClick={handleClickShowAll}>{buttonLabel}</button>
+    <div style={blogStyle} className="blog">
+      <h2>
+        {blog.title} {blog.author}
+      </h2>
+      <div>
+        <div>
+          <a href={blog.url}>{blog.url}</a>
+        </div>
+        <div>
+          {blog.likes} likes
+          <button onClick={handleClickLikes}>like</button>
+        </div>
+        <div>added by {user.name}</div>
+      </div>
+      <div>
+        {loggedUser.id === blog.user ? (
+          <button onClick={handleClickDelete}>delete</button>
+        ) : null}
+      </div>
     </div>
   );
 };
