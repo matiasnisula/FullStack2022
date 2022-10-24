@@ -1,14 +1,10 @@
 import { useState } from "react";
-import PropTypes from "prop-types";
+import { deleteBlogById, addLikeToBlog } from "../reducers/blogReducer";
+import { setNotificationWithTimeout } from "../reducers/notificationReducer";
+import { useDispatch } from "react-redux";
 
-const Blog = ({ blog, updateBlog, deleteBlog, loggedUser }) => {
-  Blog.propTypes = {
-    blog: PropTypes.object.isRequired,
-    updateBlog: PropTypes.func.isRequired,
-    deleteBlog: PropTypes.func.isRequired,
-    loggedUser: PropTypes.object.isRequired,
-  };
-
+const Blog = ({ id, author, title, url, likes, blogUserId, loggedUser }) => {
+  const dispatch = useDispatch();
   const [showAll, setShowAll] = useState(false);
 
   const blogStyle = {
@@ -25,34 +21,45 @@ const Blog = ({ blog, updateBlog, deleteBlog, loggedUser }) => {
   };
 
   const handleClickLikes = () => {
-    const newLikes = blog.likes + 1;
-    const user = blog.user;
-    updateBlog({
-      ...blog,
-      likes: newLikes,
-      user: user,
-    });
+    dispatch(addLikeToBlog(id));
+  };
+
+  const deleteBlog = (id) => {
+    let confirmDelete = window.confirm(`Remove ${title} by ${author}`);
+    if (!confirmDelete) {
+      return;
+    }
+    dispatch(deleteBlogById(id))
+      .then(() => {
+        const message = `Deleted ${title} by ${author}`;
+        dispatch(setNotificationWithTimeout(message, "notification", 5));
+      })
+      .catch((error) => {
+        const errorMessage = `Failed to delete ${title} by ${author}`;
+        console.log("ERROR: ", error);
+        dispatch(setNotificationWithTimeout(errorMessage, "error", 5));
+      });
   };
 
   const handleClickDelete = () => {
-    deleteBlog(blog);
+    deleteBlog(id);
   };
 
   if (showAll) {
     return (
       <div style={blogStyle} className="blog">
         <div>
-          {blog.title}
+          {title}
           <button onClick={handleClickShowAll}>{buttonLabel}</button>
         </div>
-        <div>{blog.author}</div>
-        <div>{blog.url}</div>
+        <div>{author}</div>
+        <div>{url}</div>
         <div>
-          {blog.likes}
+          {likes}
           <button onClick={handleClickLikes}>like</button>
         </div>
         <div>
-          {loggedUser.id === blog.user ? (
+          {loggedUser.id === blogUserId ? (
             <button onClick={handleClickDelete}>delete</button>
           ) : null}
         </div>
@@ -62,7 +69,7 @@ const Blog = ({ blog, updateBlog, deleteBlog, loggedUser }) => {
 
   return (
     <div style={blogStyle}>
-      {blog.title} {blog.author}
+      {title} {author}
       <button onClick={handleClickShowAll}>{buttonLabel}</button>
     </div>
   );

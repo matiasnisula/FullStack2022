@@ -35,7 +35,6 @@ const App = () => {
           })
         )
       );
-    });
   }, []);
 
   useEffect(() => {
@@ -74,45 +73,6 @@ const App = () => {
     setUser(null);
   };
 
-  const updateBlog = async (blogObject) => {
-    try {
-      const updatedBlog = await blogService.update(blogObject);
-      dispatch(
-        setBlogs(
-          blogs.map((blog) => {
-            if (updatedBlog.id === blog.id) {
-              return updatedBlog;
-            }
-            return blog;
-          })
-        )
-      );
-    } catch (exception) {
-      console.log("ERROR: ", exception);
-    }
-  };
-
-  const deleteBlog = async (blogObject) => {
-    try {
-      let confirmDelete = window.confirm(
-        `Remove ${blogObject.title} by ${blogObject.author}`
-      );
-      if (!confirmDelete) {
-        return;
-      }
-      await blogService.remove(blogObject.id);
-      dispatch(
-        setBlogs(
-          blogs.filter((blog) => {
-            return blog.id !== blogObject.id;
-          })
-        )
-      );
-    } catch (exception) {
-      console.log("ERROR: ", exception);
-    }
-  };
-
   const blogFormRef = useRef();
 
   if (user === null) {
@@ -141,7 +101,7 @@ const App = () => {
       <Togglable buttonLabel="new blog" ref={blogFormRef}>
         <CreateBlogForm blogFormRef={blogFormRef} />
       </Togglable>
-      <BlogList updateBlog={updateBlog} deleteBlog={deleteBlog} user={user} />
+      <BlogList loggedUser={user} />
     </div>
   );
 };
