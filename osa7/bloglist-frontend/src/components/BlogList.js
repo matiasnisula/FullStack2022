@@ -10,6 +10,7 @@ const BlogList = () => {
 
   return (
     <div>
+      <h2>Blogs</h2>
       {sortedBlogs.map((blog) => {
         return (
           <Blog
