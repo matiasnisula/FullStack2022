@@ -57,6 +57,20 @@ export const addLikeToBlog = (id) => {
   };
 };
 
+export const addCommentToBlog = (id, comment) => {
+  return async (dispatch, getState) => {
+    const blogObjectToBeUpdated = getState().blogs.find((blog) => {
+      return blog.id === id;
+    });
+    const newBlogObject = {
+      ...blogObjectToBeUpdated,
+      comments: blogObjectToBeUpdated.comments.concat(comment),
+    };
+    const updatedBlogObject = await blogService.createComment(newBlogObject);
+    dispatch(appendUpdatedBlog(updatedBlogObject));
+  };
+};
+
 export const initBlogs = () => {
   return async (dispatch, getState) => {
     const blogs = await blogService.getAll();
@@ -70,6 +84,7 @@ export const initBlogs = () => {
             url: blog.url,
             likes: blog.likes,
             user: blog.user.id,
+            comments: blog.comments,
           };
         })
       )

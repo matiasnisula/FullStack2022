@@ -1,4 +1,8 @@
-import { deleteBlogById, addLikeToBlog } from "../reducers/blogReducer";
+import {
+  deleteBlogById,
+  addLikeToBlog,
+  addCommentToBlog,
+} from "../reducers/blogReducer";
 import { setNotificationWithTimeout } from "../reducers/notificationReducer";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
@@ -14,6 +18,9 @@ const Blog = ({ blog, showInfo }) => {
       return user.id === blog.user;
     });
   });
+  if (!user) {
+    return null;
+  }
 
   const blogStyle = {
     paddingTop: 10,
@@ -50,6 +57,20 @@ const Blog = ({ blog, showInfo }) => {
     deleteBlog(blog.id);
   };
 
+  const addComment = (event) => {
+    event.preventDefault();
+    const comment = event.target.comment.value;
+    dispatch(addCommentToBlog(blog.id, comment))
+      .then(() => {
+        event.target.comment.value = "";
+      })
+      .catch((error) => {
+        dispatch(
+          setNotificationWithTimeout("error adding comment", "error", 5)
+        );
+      });
+  };
+
   if (!showInfo) {
     return (
       <div style={blogStyle}>
@@ -79,6 +100,20 @@ const Blog = ({ blog, showInfo }) => {
         {loggedUser.id === blog.user ? (
           <button onClick={handleClickDelete}>delete</button>
         ) : null}
+      </div>
+      <div>
+        <h3>comments</h3>
+        <form onSubmit={addComment}>
+          <input type="text" name="comment" id="comment" />
+          <button type="submit">add comment</button>
+        </form>
+      </div>
+      <div>
+        <ul>
+          {blog.comments.map((comment) => {
+            return <li key={comment}>{comment}</li>;
+          })}
+        </ul>
       </div>
     </div>
   );
