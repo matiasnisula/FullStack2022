@@ -1,7 +1,5 @@
 const blogsRouter = require("express").Router();
 const Blog = require("../models/blog");
-const User = require("../models/user");
-const jwt = require("jsonwebtoken");
 const userExtractor = require("../utils/middleware").userExtractor;
 
 blogsRouter.get("/", async (request, response) => {
@@ -26,6 +24,25 @@ blogsRouter.post("/", userExtractor, async (request, response) => {
   user.blogs = user.blogs.concat(savedBlog._id);
   await user.save();
   response.status(201).json(savedBlog);
+});
+
+blogsRouter.post("/:id/comments", async (request, response) => {
+  const id = request.params.id;
+  const body = request.body;
+  const blog = {
+    title: body.title,
+    author: body.author,
+    url: body.url,
+    likes: body.likes,
+    user: body.user,
+    comments: body.comments,
+  };
+  const result = await Blog.findByIdAndUpdate(id, blog, { new: true });
+  if (result) {
+    response.json(result);
+  } else {
+    response.status(400).end();
+  }
 });
 
 blogsRouter.put("/:id", async (request, response) => {
