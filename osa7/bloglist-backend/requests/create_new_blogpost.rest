@@ -1,0 +1,35 @@
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXIzIiwiaWQiOiI2MzM2ZjdiZjUxZWNiNTBlMzYyMzAyZTYiLCJpYXQiOjE2NjQ1NDY3OTh9.WwCJ0jUrZZjdwpVjtz3Xi3RRUS43QTi_kBmO0rROdiU
+
+{
+    "title": "user3 lisäys",
+    "author": "USER3",
+    "url": "www.user3.fi",
+    "likes": 5
+}
+
+####
+
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXIyIiwiaWQiOiI2MzM2YzAxY2FjYTUxOWVlZjFiOWQzMGUiLCJpYXQiOjE2NjQ1MzI1ODN9.9RaCVzynlxU_HU8CPBOb4_7M-fBAn6ALf1JUk_hGtW8
+
+{
+    "title": "Testausta 2",
+    "author": "ABC",
+    "url": "www.testausta2.fi",
+    "likes": 3
+}
+
+####
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1hdGlhcyIsImlkIjoiNjMzNmMwMTVhY2E1MTllZWYxYjlkMzBhIiwiaWF0IjoxNjY0NTMyNTE3fQ.8rKE5usYhhaHk0_xWpqJN_r9QfYrUCjwZ__RUFLjf_8
+
+{
+    "title": "Lisäys tokenin kanssa",
+    "author": "Token",
+    "url": "www.token.fi",
+    "likes": 9
+}
