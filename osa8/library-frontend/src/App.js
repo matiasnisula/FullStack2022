@@ -3,6 +3,7 @@ import { useQuery } from "@apollo/client";
 import Authors from "./components/Authors";
 import Books from "./components/Books";
 import NewBook from "./components/NewBook";
+import EditAuthor from "./components/EditAuthor";
 import { ALL_AUTHORS, ALL_BOOKS } from "./queries";
 
 const App = () => {
@@ -22,6 +23,10 @@ const App = () => {
       </div>
 
       <Authors
+        show={page === "authors"}
+        authors={resultAuthors.loading ? [] : resultAuthors.data.allAuthors}
+      />
+      <EditAuthor
         show={page === "authors"}
         authors={resultAuthors.loading ? [] : resultAuthors.data.allAuthors}
       />
