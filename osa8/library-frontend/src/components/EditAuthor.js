@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useMutation } from "@apollo/client";
 import { EDIT_AUTHOR, ALL_AUTHORS } from "../queries";
 
-const EditAuthor = ({ show, authors }) => {
+const EditAuthor = ({ show, authors, token }) => {
   const [name, setName] = useState("");
   const [born, setBorn] = useState("");
 
@@ -19,7 +19,7 @@ const EditAuthor = ({ show, authors }) => {
     }
   }, [result.data]);
 
-  if (!show) {
+  if (!show || !token) {
     return null;
   }
 
