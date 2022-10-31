@@ -16,6 +16,9 @@ const NavBar = ({ setPage, loggedUser, setToken }) => {
         <button onClick={() => setPage("authors")}>authors</button>
         <button onClick={() => setPage("books")}>books</button>
         <button onClick={() => setPage("add")}>add book</button>
+        <button onClick={() => setPage("recommendations")}>
+          recommendations
+        </button>
         <button onClick={logout}>logout</button>
       </div>
     );

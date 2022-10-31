@@ -6,16 +6,13 @@ import NewBook from "./components/NewBook";
 import EditAuthor from "./components/EditAuthor";
 import NavBar from "./components/NavBar";
 import LoginForm from "./components/LoginForm";
-import { ALL_AUTHORS, ALL_BOOKS } from "./queries";
+import RecommendedBooks from "./components/RecommendedBooks";
+import { ALL_AUTHORS } from "./queries";
 
 const App = () => {
   const [page, setPage] = useState("authors");
   const [token, setToken] = useState(null);
   const resultAuthors = useQuery(ALL_AUTHORS);
-  const resultBooks = useQuery(ALL_BOOKS);
-
-  console.log("result.data (authors): ", resultAuthors.data);
-  console.log("result.data (books): ", resultBooks.data);
 
   useEffect(() => {
     const loggedUser = window.localStorage.getItem("loggedUser");
@@ -37,12 +34,11 @@ const App = () => {
         token={token}
       />
 
-      <Books
-        show={page === "books"}
-        books={resultBooks.loading ? [] : resultBooks.data.allBooks}
-      />
+      <Books show={page === "books"} />
 
       <NewBook show={page === "add"} />
+
+      <RecommendedBooks show={page === "recommendations"} />
 
       <LoginForm
         show={page === "login"}
