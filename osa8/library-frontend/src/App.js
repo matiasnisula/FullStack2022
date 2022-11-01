@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useQuery } from "@apollo/client";
+import { useQuery, useLazyQuery, useApolloClient } from "@apollo/client";
 import Authors from "./components/Authors";
 import Books from "./components/Books";
 import NewBook from "./components/NewBook";
@@ -7,12 +7,17 @@ import EditAuthor from "./components/EditAuthor";
 import NavBar from "./components/NavBar";
 import LoginForm from "./components/LoginForm";
 import RecommendedBooks from "./components/RecommendedBooks";
-import { ALL_AUTHORS } from "./queries";
+import { ALL_AUTHORS, GET_LOGGED_USER } from "./queries";
 
 const App = () => {
+  const client = useApolloClient();
   const [page, setPage] = useState("authors");
   const [token, setToken] = useState(null);
+  const [favoriteGenre, setFavoriteGenre] = useState("");
   const resultAuthors = useQuery(ALL_AUTHORS);
+  const [getLoggedUser] = useLazyQuery(GET_LOGGED_USER, {
+    fetchPolicy: "network-only",
+  });
 
   useEffect(() => {
     const loggedUser = window.localStorage.getItem("loggedUser");
@@ -21,9 +26,31 @@ const App = () => {
     }
   }, []);
 
+  useEffect(() => {
+    const getUser = async () => {
+      const result = await getLoggedUser();
+      if (result.data.me) {
+        setFavoriteGenre(result.data.me.favoriteGenre);
+      }
+    };
+    getUser();
+  }, [token]); //eslint-disable-line
+
+  const logout = () => {
+    setToken(null);
+    window.localStorage.removeItem("loggedUser");
+    client.resetStore();
+    setPage("authors");
+  };
+
   return (
     <div>
-      <NavBar setPage={setPage} loggedUser={token} setToken={setToken} />
+      <NavBar
+        setPage={setPage}
+        loggedUser={token}
+        setToken={setToken}
+        logout={logout}
+      />
       <Authors
         show={page === "authors"}
         authors={resultAuthors.loading ? [] : resultAuthors.data.allAuthors}
@@ -38,7 +65,10 @@ const App = () => {
 
       <NewBook show={page === "add"} />
 
-      <RecommendedBooks show={page === "recommendations"} />
+      <RecommendedBooks
+        show={page === "recommendations"}
+        favoriteGenre={favoriteGenre}
+      />
 
       <LoginForm
         show={page === "login"}

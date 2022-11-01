@@ -1,26 +1,18 @@
-import { useLazyQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import { useState, useEffect } from "react";
-import { ALL_BOOKS_BY_GENRE, GET_LOGGED_USER } from "../queries";
+import { ALL_BOOKS_BY_GENRE } from "../queries";
 
-const RecommendedBooks = ({ show }) => {
+const RecommendedBooks = ({ show, favoriteGenre }) => {
   const [recommendedBooks, setRecommendedBooks] = useState([]);
-  const [favoriteGenre, setFavoriteGenre] = useState("");
-
-  const [getLoggedUser] = useLazyQuery(GET_LOGGED_USER);
-  const [getBooksByGenre] = useLazyQuery(ALL_BOOKS_BY_GENRE);
+  const result = useQuery(ALL_BOOKS_BY_GENRE, {
+    variables: { genre: favoriteGenre },
+  });
 
   useEffect(() => {
-    const getBooksByFavouriteGenre = async () => {
-      const user = await getLoggedUser();
-      const result = await getBooksByGenre({
-        variables: { genre: user.data.me.favoriteGenre },
-      });
-      console.log("result: ", result);
+    if (result.data) {
       setRecommendedBooks(result.data.allBooks);
-      setFavoriteGenre(user.data.me.favoriteGenre);
-    };
-    getBooksByFavouriteGenre();
-  }, [favoriteGenre]); //eslint-disable-line
+    }
+  }, [result.data]); //eslint-disable-line
 
   if (!show) {
     return null;

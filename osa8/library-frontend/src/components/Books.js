@@ -11,20 +11,19 @@ const Books = ({ show }) => {
   const [getBooksByGenre] = useLazyQuery(ALL_BOOKS_BY_GENRE);
 
   useEffect(() => {
-    if (resultBooks.loading) {
-      return;
-    }
-    let arrGenres = [];
-    for (let book of resultBooks.data.allBooks) {
-      for (let genre of book.genres) {
-        if (!arrGenres.includes(genre)) {
-          arrGenres.push(genre);
+    if (resultBooks.data) {
+      let arrGenres = [];
+      for (let book of resultBooks.data.allBooks) {
+        for (let genre of book.genres) {
+          if (!arrGenres.includes(genre)) {
+            arrGenres.push(genre);
+          }
         }
       }
+      setBooks(resultBooks.data.allBooks.concat());
+      setGenres(arrGenres.concat());
     }
-    setBooks(resultBooks.data.allBooks.concat());
-    setGenres(arrGenres.concat());
-  }, [resultBooks.loading]); //eslint-disable-line
+  }, [resultBooks.data]); //eslint-disable-line
 
   if (!show) {
     return null;

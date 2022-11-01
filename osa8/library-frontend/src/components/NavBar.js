@@ -1,15 +1,4 @@
-import { useApolloClient } from "@apollo/client";
-
-const NavBar = ({ setPage, loggedUser, setToken }) => {
-  const client = useApolloClient();
-
-  const logout = () => {
-    setToken(null);
-    window.localStorage.removeItem("loggedUser");
-    client.resetStore();
-    setPage("authors");
-  };
-
+const NavBar = ({ setPage, loggedUser, logout }) => {
   if (loggedUser) {
     return (
       <div>
