@@ -1,5 +1,10 @@
 import { useEffect, useState } from "react";
-import { useQuery, useLazyQuery, useApolloClient } from "@apollo/client";
+import {
+  useQuery,
+  useLazyQuery,
+  useApolloClient,
+  useSubscription,
+} from "@apollo/client";
 import Authors from "./components/Authors";
 import Books from "./components/Books";
 import NewBook from "./components/NewBook";
@@ -7,7 +12,13 @@ import EditAuthor from "./components/EditAuthor";
 import NavBar from "./components/NavBar";
 import LoginForm from "./components/LoginForm";
 import RecommendedBooks from "./components/RecommendedBooks";
-import { ALL_AUTHORS, GET_LOGGED_USER } from "./queries";
+import {
+  ALL_AUTHORS,
+  GET_LOGGED_USER,
+  BOOK_ADDED,
+  ALL_BOOKS,
+  ALL_BOOKS_BY_GENRE,
+} from "./queries";
 
 const App = () => {
   const client = useApolloClient();
@@ -35,6 +46,52 @@ const App = () => {
     };
     getUser();
   }, [token]); //eslint-disable-line
+
+  useSubscription(BOOK_ADDED, {
+    onSubscriptionData: ({ subscriptionData }) => {
+      const addedBook = subscriptionData.data.bookAdded;
+      window.alert(
+        `New book ${addedBook.title} by ${addedBook.author.name} has been added`
+      );
+      client.cache.updateQuery({ query: ALL_BOOKS }, ({ allBooks }) => {
+        if (!allBooks) {
+          return;
+        }
+        return {
+          allBooks: allBooks.concat(addedBook),
+        };
+      });
+      client.cache.updateQuery(
+        {
+          query: ALL_BOOKS_BY_GENRE,
+          variables: { genre: favoriteGenre },
+        },
+        (data) => {
+          if (!data) {
+            return;
+          }
+          return {
+            allBooks: data.allBooks.concat(addedBook),
+          };
+        }
+      );
+
+      client.cache.updateQuery({ query: ALL_AUTHORS }, (data) => {
+        if (!data) {
+          return;
+        }
+        const authorFound = data.allAuthors.find((author) => {
+          return author.name === addedBook.author.name;
+        });
+        const newBookCount = authorFound ? authorFound.bookCount + 1 : 1;
+        const authorToAdd = { ...addedBook.author, bookCount: newBookCount };
+
+        return {
+          allAuthors: data.allAuthors.concat(authorToAdd),
+        };
+      });
+    },
+  });
 
   const logout = () => {
     setToken(null);
