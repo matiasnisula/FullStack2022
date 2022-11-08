@@ -80,7 +80,7 @@ const parseArgumentsExercisesCalc = (
   if (args.length < 4) {
     throw new Error("Not enough arguments");
   }
-  let target: number;
+  let target: number = 0;
   let dailyExerciseHours: Array<number> = [];
   for (let i = 2; i < args.length; i++) {
     if (isNaN(Number(args[i]))) {
