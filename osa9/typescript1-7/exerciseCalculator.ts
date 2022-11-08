@@ -10,16 +10,14 @@ interface Summary {
   average: number;
 }
 
-const calculateExercises = (
+export const calculateExercises = (
   target: number,
   dailyExerciseHours: number[]
 ): Summary => {
-  let periodLength: number = dailyExerciseHours.length;
-  let trainingDays: number = 0;
-  let success: boolean = true;
+  const periodLength: number = dailyExerciseHours.length;
+  let trainingDays = 0;
+  let success = true;
   let rating: Rating;
-  let ratingDescription: string;
-  let average: number;
 
   let sum = 0;
   const ratingDescriptionObj = {
@@ -35,7 +33,7 @@ const calculateExercises = (
     sum += dailyExerciseHours[i];
     trainingDays++;
   }
-  average = sum / periodLength;
+  const average = isNaN(sum / periodLength) ? 0 : sum / periodLength;
 
   if (average < target) {
     success = false;
@@ -48,7 +46,7 @@ const calculateExercises = (
   } else {
     rating = 1;
   }
-  ratingDescription = ratingDescriptionObj[rating];
+  const ratingDescription = ratingDescriptionObj[rating];
 
   const summary = {
     periodLength,
@@ -80,8 +78,8 @@ const parseArgumentsExercisesCalc = (
   if (args.length < 4) {
     throw new Error("Not enough arguments");
   }
-  let target: number = 0;
-  let dailyExerciseHours: Array<number> = [];
+  let target = 0;
+  const dailyExerciseHours: Array<number> = [];
   for (let i = 2; i < args.length; i++) {
     if (isNaN(Number(args[i]))) {
       throw new Error("Provided values were not numbers");
@@ -104,5 +102,7 @@ try {
   );
   console.log(calculateExercises(target, dailyExerciseHours));
 } catch (error) {
-  console.log("ERROR:", error.message);
+  if (error instanceof Error) {
+    console.log("ERROR:", error.message);
+  }
 }

@@ -51,5 +51,7 @@ try {
   const { height, weight } = parseArgumentsBmi(process.argv);
   console.log(calculateBmi(height, weight));
 } catch (error) {
-  console.log("Error:", error.message);
+  if (error instanceof Error) {
+    console.log("Error:", error.message);
+  }
 }
