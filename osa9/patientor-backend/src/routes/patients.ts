@@ -1,6 +1,6 @@
 import express from "express";
 import patientService from "../services/patientService";
-import parseNewPatientEntry from "../utils";
+import parseNewPatient from "../utils";
 
 const router = express.Router();
 
@@ -9,9 +9,21 @@ router.get("/", (_req, res) => {
   res.send(result);
 });
 
+router.get("/:id", (req, res) => {
+  const id = req.params.id;
+  const patient = patientService.findOne(id);
+  if (patient) {
+    res.json(patient);
+  } else {
+    res.status(404).json({
+      error: "Patient not found",
+    });
+  }
+});
+
 router.post("/", (req, res) => {
   try {
-    const patientToAdd = parseNewPatientEntry(req.body);
+    const patientToAdd = parseNewPatient(req.body);
     const addedPatient = patientService.addPatient(patientToAdd);
     return res.json(addedPatient);
   } catch (error) {
