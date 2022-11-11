@@ -6,7 +6,7 @@ import { useStateValue, updatePatient } from "./state";
 import { Patient } from "./types";
 
 const PatientInfo = () => {
-  const [{ patients }, dispatch] = useStateValue();
+  const [{ patients, diagnoses }, dispatch] = useStateValue();
   const [patient, setPatient] = React.useState<Patient>();
 
   const { id } = useParams<{ id: string }>();
@@ -34,6 +34,12 @@ const PatientInfo = () => {
     void fetchPatientInfo();
   }, []);
 
+  const findDiagnose = (code: string) => {
+    return diagnoses.find((diagnose) => {
+      return diagnose.code === code;
+    });
+  };
+
   if (!patient) {
     return <p>Loading...</p>;
   }
@@ -43,19 +49,22 @@ const PatientInfo = () => {
       <p>gender: {patient.gender}</p>
       <p>ssn: {patient.ssn}</p>
       <p>occupation: {patient.occupation}</p>
-      <div><h3>entries</h3></div>
-        {patient.entries.map((entry) => {
-            return (
-              <div key={entry.id}>
-                <p>{entry.description}</p>
-                <ul>
-                {entry.diagnosisCodes?.map((code) => {
-                  return <li key={code}>{code}</li>;
-                })}
-                </ul>
-              </div>
-            );
-        })}
+      <div>
+        <h3>entries</h3>
+      </div>
+      {patient.entries.map((entry) => {
+        return (
+          <div key={entry.id}>
+            <p>{entry.date} {entry.description}</p>
+            <ul>
+              {entry.diagnosisCodes?.map((code) => {
+                const diagnose = findDiagnose(code);
+                return <li key={code}>{code} {diagnose ? diagnose.name : ""}</li>;
+              })}
+            </ul>
+          </div>
+        );
+      })}
     </div>
   );
 };
