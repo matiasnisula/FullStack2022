@@ -1,4 +1,4 @@
-import patientData from "../../data/patients.json";
+import patientData from "../../data/patients";
 import { Patient, NewPatient } from "../types";
 import parseNewPatient from "../utils";
 import { v1 as uuid } from "uuid";
@@ -21,7 +21,7 @@ const getAllExcludeSsn = (): Array<Omit<Patient, "ssn">> => {
       dateOfBirth: patient.dateOfBirth,
       gender: patient.gender,
       occupation: patient.occupation,
-      entries: [],
+      entries: patient.entries,
     };
   });
 };
@@ -30,13 +30,13 @@ const findOne = (id: string): Patient | undefined => {
   return patients.find((patient) => patient.id === id);
 };
 
-const addPatient = (entry: NewPatient): Patient => {
-  const newPatientEntry = {
+const addPatient = (patient: NewPatient): Patient => {
+  const newPatient = {
     id: uuid(),
-    ...entry,
+    ...patient,
   };
-  patients.push(newPatientEntry);
-  return newPatientEntry;
+  patients.push(newPatient);
+  return newPatient;
 };
 
 export default {
