@@ -2,7 +2,7 @@ import React from "react";
 import axios from "axios";
 import { apiBaseUrl } from "./constants";
 import { useParams } from "react-router-dom";
-import { useStateValue } from "./state";
+import { useStateValue, updatePatient } from "./state";
 import { Patient } from "./types";
 
 const PatientInfo = () => {
@@ -25,7 +25,7 @@ const PatientInfo = () => {
           // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
           `${apiBaseUrl}/patients/${id}`
         );
-        dispatch({ type: "UPDATE_PATIENT", payload: resultPatient });
+        dispatch(updatePatient(resultPatient));
         setPatient(resultPatient);
       } catch (error) {
         console.log(error);
