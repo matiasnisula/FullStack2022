@@ -1,10 +1,10 @@
 import patientData from "../../data/patients";
-import { Patient, NewPatient } from "../types";
-import parseNewPatient from "../utils";
+import { Patient, NewPatient, EntryWithoutId, Entry } from "../types";
+import utils from "../utils";
 import { v1 as uuid } from "uuid";
 
 const patients: Array<Patient> = patientData.map((obj) => {
-  const patient = parseNewPatient(obj) as Patient;
+  const patient = utils.parseNewPatient(obj) as Patient;
   patient.id = obj.id;
   return patient;
 });
@@ -39,9 +39,23 @@ const addPatient = (patient: NewPatient): Patient => {
   return newPatient;
 };
 
+const addEntryToPatient = (
+  id: string,
+  entry: EntryWithoutId
+): Entry | undefined => {
+  const patient = findOne(id);
+  const newEntry = {
+    id: uuid(),
+    ...entry,
+  };
+  patient?.entries.push(newEntry);
+  return newEntry;
+};
+
 export default {
   getAll,
   getAllExcludeSsn,
   addPatient,
   findOne,
+  addEntryToPatient,
 };
