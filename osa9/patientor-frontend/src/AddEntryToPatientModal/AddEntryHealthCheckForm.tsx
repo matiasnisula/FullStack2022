@@ -44,13 +44,16 @@ export const AddEntryHealthCheckForm = ({
       validate={(values) => {
         const requiredError = "Field is required";
         const errors: { [field: string]: string } = {};
-        if (!values.date) {
+        if (!values.date.trim()) {
           errors.date = requiredError;
         }
-        if (!values.description) {
+        if (!(Date.parse(values.date)) && values.date) {
+          errors.date = "Invalid date";
+        }
+        if (!values.description.trim()) {
           errors.description = requiredError;
         }
-        if (!values.specialist) {
+        if (!values.specialist.trim()) {
           errors.specialist = requiredError;
         }
         if (!values.healthCheckRating) {
