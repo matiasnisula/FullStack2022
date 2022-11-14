@@ -2,12 +2,20 @@ import React from "react";
 import axios from "axios";
 import { apiBaseUrl } from "./constants";
 import { useParams } from "react-router-dom";
-import { useStateValue, updatePatient } from "./state";
-import { Patient } from "./types";
+import { useStateValue, updatePatient, addEntryToPatient } from "./state";
+import { Entry, Patient } from "./types";
+import AddEntryToPatientModal from "./AddEntryToPatientModal";
+import { Button } from "@material-ui/core";
+import { HealthCheckFormValues } from "./AddEntryToPatientModal/AddEntryHealthCheckForm";
 
 const PatientInfo = () => {
   const [{ patients, diagnoses }, dispatch] = useStateValue();
   const [patient, setPatient] = React.useState<Patient>();
+  const [modalOpen, setModalOpen] = React.useState<boolean>(false);
+
+  const closeModal = (): void => {
+    setModalOpen(false);
+  };
 
   const { id } = useParams<{ id: string }>();
 
@@ -32,7 +40,31 @@ const PatientInfo = () => {
       }
     };
     void fetchPatientInfo();
-  }, []);
+  }, [patients]);
+
+  const submitNewEntryToPatient = async (values: HealthCheckFormValues) => {
+    try {
+      if (!id) {
+        return;
+      }
+      console.log("form values:", values);
+
+      const { data: newEntry } = await axios.post<Entry>(
+        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+        `${apiBaseUrl}/patients/${id}/entries`,
+        values
+      );
+      console.log("newEntry (POST):", newEntry);
+      dispatch(addEntryToPatient(id, newEntry));
+      closeModal();
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        console.log(error?.response?.data || "Some axios error");
+      } else {
+        console.log("Unknown error:", error);
+      }
+    }
+  };
 
   const findDiagnose = (code: string) => {
     return diagnoses.find((diagnose) => {
@@ -55,16 +87,33 @@ const PatientInfo = () => {
       {patient.entries.map((entry) => {
         return (
           <div key={entry.id}>
-            <p>{entry.date} {entry.description}</p>
+            <p>
+              {entry.date} {entry.description}
+            </p>
             <ul>
               {entry.diagnosisCodes?.map((code) => {
                 const diagnose = findDiagnose(code);
-                return <li key={code}>{code} {diagnose ? diagnose.name : ""}</li>;
+                return (
+                  <li key={code}>
+                    {code} {diagnose ? diagnose.name : ""}
+                  </li>
+                );
               })}
             </ul>
           </div>
         );
       })}
+      <div>
+        <AddEntryToPatientModal
+          diagnoses={diagnoses}
+          onSubmit={submitNewEntryToPatient}
+          modalOpen={modalOpen}
+          onClose={closeModal}
+        />
+      </div>
+      <Button variant="contained" onClick={() => setModalOpen(true)}>
+        Add New Entry
+      </Button>
     </div>
   );
 };
