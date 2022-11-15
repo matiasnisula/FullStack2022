@@ -62,19 +62,22 @@ interface TextProps extends FieldProps {
   placeholder: string;
 }
 
-export const TextField = ({ field, label, placeholder }: TextProps) => (
-  <div style={{ marginBottom: "1em" }}>
-    <TextFieldMUI
-      fullWidth
-      label={label}
-      placeholder={placeholder}
-      {...field}
-    />
-    <Typography variant="subtitle2" style={{ color: "red" }}>
-      <ErrorMessage name={field.name} />
-    </Typography>
-  </div>
-);
+export const TextField = ({ field, label, placeholder }: TextProps) => {
+  
+  return (
+    <div style={{ marginBottom: "1em" }}>
+      <TextFieldMUI
+        fullWidth
+        label={label}
+        placeholder={placeholder}
+        {...field}
+      />
+      <Typography variant="subtitle2" style={{ color: "red" }}>
+        <ErrorMessage name={field.name} />
+      </Typography>
+    </div>
+  );
+};
 
 /*
   for exercises 9.24.-

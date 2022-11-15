@@ -7,11 +7,20 @@ import { Entry, Patient } from "./types";
 import AddEntryToPatientModal from "./AddEntryToPatientModal";
 import { Button } from "@material-ui/core";
 import { HealthCheckFormValues } from "./AddEntryToPatientModal/AddEntryHealthCheckForm";
+import { HospitalFormValues } from "./AddEntryToPatientModal/AddEntryHospitalForm";
+import { OccupationalHealthcareFormValues } from "./AddEntryToPatientModal/AddEntryOccupationalHealthForm";
+
+export type EntryFormValues =
+  | HealthCheckFormValues
+  | HospitalFormValues
+  | OccupationalHealthcareFormValues;
 
 const PatientInfo = () => {
+  const entryTypes = ["HealthCheck", "Hospital", "OccupationalHealthcare"];
   const [{ patients, diagnoses }, dispatch] = useStateValue();
   const [patient, setPatient] = React.useState<Patient>();
   const [modalOpen, setModalOpen] = React.useState<boolean>(false);
+  const [entryType, setEntryType] = React.useState<string>(entryTypes[0]);
 
   const closeModal = (): void => {
     setModalOpen(false);
@@ -42,19 +51,16 @@ const PatientInfo = () => {
     void fetchPatientInfo();
   }, [patients]);
 
-  const submitNewEntryToPatient = async (values: HealthCheckFormValues) => {
+  const submitNewEntryToPatient = async (values: EntryFormValues) => {
     try {
       if (!id) {
         return;
       }
-      console.log("form values:", values);
-
       const { data: newEntry } = await axios.post<Entry>(
         // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
         `${apiBaseUrl}/patients/${id}/entries`,
         values
       );
-      console.log("newEntry (POST):", newEntry);
       dispatch(addEntryToPatient(id, newEntry));
       closeModal();
     } catch (error: unknown) {
@@ -64,6 +70,12 @@ const PatientInfo = () => {
         console.log("Unknown error:", error);
       }
     }
+  };
+
+  const handleEntryTypeChange = (
+    e: React.ChangeEvent<HTMLSelectElement>
+  ): void => {
+    setEntryType(e.target.value);
   };
 
   const findDiagnose = (code: string) => {
@@ -105,6 +117,7 @@ const PatientInfo = () => {
       })}
       <div>
         <AddEntryToPatientModal
+          entryType={entryType}
           diagnoses={diagnoses}
           onSubmit={submitNewEntryToPatient}
           modalOpen={modalOpen}
@@ -114,6 +127,18 @@ const PatientInfo = () => {
       <Button variant="contained" onClick={() => setModalOpen(true)}>
         Add New Entry
       </Button>
+      <div>
+        <strong>Choose entry type: </strong>
+        <select name="types" value={entryType} onChange={handleEntryTypeChange}>
+          {entryTypes.map((entry) => {
+            return (
+              <option key={entry} value={entry}>
+                {entry}
+              </option>
+            );
+          })}
+        </select>
+      </div>
     </div>
   );
 };

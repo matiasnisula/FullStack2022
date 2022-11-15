@@ -102,7 +102,6 @@ export const reducer = (state: State, action: Action): State => {
       };
       const newEntries = patient.entries.concat(action.payload.entry);
       patient.entries = newEntries;
-      console.log("AddEntryToPatient (reducer.ts):", patient);
       return {
         ...state,
         patients: {

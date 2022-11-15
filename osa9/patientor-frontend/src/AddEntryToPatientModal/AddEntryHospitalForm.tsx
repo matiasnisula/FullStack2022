@@ -2,30 +2,18 @@ import React from "react";
 import { Grid, Button } from "@material-ui/core";
 import { Field, Formik, Form } from "formik";
 
-import {
-  TextField,
-  SelectField,
-  HealthCheckOption,
-  DiagnosisSelection,
-} from "../AddPatientModal/FormField";
-import { HealthCheckRating, HealthCheckEntry, Diagnosis } from "../types";
+import { TextField, DiagnosisSelection } from "../AddPatientModal/FormField";
+import { HospitalEntry, Diagnosis } from "../types";
 
-export type HealthCheckFormValues = Omit<HealthCheckEntry, "id">;
+export type HospitalFormValues = Omit<HospitalEntry, "id">;
 
 interface Props {
   diagnoses: Diagnosis[];
-  onSubmit: (values: HealthCheckFormValues) => void;
+  onSubmit: (values: HospitalFormValues) => void;
   onCancel: () => void;
 }
 
-const healthCheckOptions: HealthCheckOption[] = [
-  { value: HealthCheckRating.Healthy, label: "Healthy" },
-  { value: HealthCheckRating.LowRisk, label: "LowRisk" },
-  { value: HealthCheckRating.HighRisk, label: "HighRisk" },
-  { value: HealthCheckRating.CriticalRisk, label: "CriticalRisk" },
-];
-
-export const AddEntryHealthCheckForm = ({
+export const AddEntryHospitalForm = ({
   diagnoses,
   onSubmit,
   onCancel,
@@ -33,21 +21,22 @@ export const AddEntryHealthCheckForm = ({
   return (
     <Formik
       initialValues={{
-        type: "HealthCheck",
+        type: "Hospital",
         date: "",
         description: "",
         specialist: "",
         diagnosisCodes: [""],
-        healthCheckRating: HealthCheckRating.Healthy,
+        discharge: { date: "", criteria: "" },
       }}
       onSubmit={onSubmit}
       validate={(values) => {
         const requiredError = "Field is required";
-        const errors: { [field: string]: string } = {};
+        const errors: { [field: string]: string | object } = {};
+
         if (!values.date.trim()) {
           errors.date = requiredError;
         }
-        if (!(Date.parse(values.date)) && values.date) {
+        if (!Date.parse(values.date) && values.date) {
           errors.date = "Invalid date";
         }
         if (!values.description.trim()) {
@@ -56,15 +45,30 @@ export const AddEntryHealthCheckForm = ({
         if (!values.specialist.trim()) {
           errors.specialist = requiredError;
         }
-        if (!values.healthCheckRating) {
-          errors.healthCheckRating = requiredError;
+        if (!Date.parse(values.discharge.date)) {
+          errors.discharge = {
+            date: "Invalid date!",
+            ...(errors.discharge as object),
+          };
+        }
+        if (!values.discharge.date) {
+          errors.discharge = {
+            date: requiredError,
+            ...(errors.discharge as object),
+          };
+        }
+        if (!values.discharge.criteria) {
+          errors.discharge = {
+            ...(errors.discharge as object),
+            criteria: requiredError,
+          };
         }
         return errors;
       }}
     >
       {({ isValid, dirty, setFieldValue, setFieldTouched }) => {
         return (
-          <Form className="form healthCheck">
+          <Form className="form hospital">
             <Field
               label="Date"
               placeholder="YYYY-MM-DD"
@@ -76,20 +80,23 @@ export const AddEntryHealthCheckForm = ({
               name="description"
               component={TextField}
             />
-            <Field
-              label="Specialist"
-              name="specialist"
-              component={TextField}
-            />
-            <SelectField
-              label="HealthCheckRating"
-              name="healthCheckRating"
-              options={healthCheckOptions}
-            />
+            <Field label="Specialist" name="specialist" component={TextField} />
             <DiagnosisSelection
               diagnoses={diagnoses}
               setFieldValue={setFieldValue}
               setFieldTouched={setFieldTouched}
+            />
+            <h3>Discharge</h3>
+            <Field
+              label="Date"
+              placeholder="YYYY-MM-DD"
+              name="discharge.date"
+              component={TextField}
+            />
+            <Field
+              label="Criteria"
+              name="discharge.criteria"
+              component={TextField}
             />
             <Grid>
               <Grid item>
@@ -123,4 +130,4 @@ export const AddEntryHealthCheckForm = ({
   );
 };
 
-export default AddEntryHealthCheckForm;
+export default AddEntryHospitalForm;
